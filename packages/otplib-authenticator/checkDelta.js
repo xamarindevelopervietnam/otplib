@@ -1,5 +1,4 @@
 import { totpCheckWithWindow } from 'otplib-core';
-import decodeKey from './decodeKey';
 
 /**
  * Checks the provided OTP token against system generated token
@@ -13,7 +12,8 @@ import decodeKey from './decodeKey';
  * @return {integer | null}
  */
 function checkDelta(token, secret, options) {
-  return totpCheckWithWindow(token, decodeKey(secret), options);
+  const decodedSecret = options.base32Decode(secret);
+  return totpCheckWithWindow(token, decodedSecret, options);
 }
 
 export default checkDelta;

@@ -1,5 +1,4 @@
 import { totpToken } from 'otplib-core';
-import decodeKey from './decodeKey';
 
 /**
  * Generates the Authenticator OTP code
@@ -10,7 +9,8 @@ import decodeKey from './decodeKey';
  * @return {number} OTP Code
  */
 function token(secret, options) {
-  return totpToken(decodeKey(secret), options);
+  const decodedSecret = options.base32Decode(secret);
+  return totpToken(decodedSecret, options);
 }
 
 export default token;

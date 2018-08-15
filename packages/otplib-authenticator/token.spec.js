@@ -1,23 +1,20 @@
 import * as core from 'otplib-core';
-import decodeKey from './decodeKey';
 import token from './token';
-
-jest.mock('./decodeKey', () => jest.fn());
 
 describe('token', () => {
   it('should return expected result', () => {
-    decodeKey.mockImplementation(() => 10);
-
     const totpToken = jest
       .spyOn(core, 'totpToken')
       .mockImplementation(() => 'result');
 
-    const options = { test: 1 };
+    const options = { test: 1, base32Decode: jest.fn() };
+
+    options.base32Decode.mockImplementation(() => 10);
 
     token('test', options);
 
-    expect(decodeKey).toHaveBeenCalledTimes(1);
-    expect(decodeKey).toHaveBeenCalledWith('test');
+    expect(options.base32Decode).toHaveBeenCalledTimes(1);
+    expect(options.base32Decode).toHaveBeenCalledWith('test');
 
     expect(totpToken).toHaveBeenCalledTimes(1);
     expect(totpToken).toHaveBeenCalledWith(10, options);

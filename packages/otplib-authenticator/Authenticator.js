@@ -56,6 +56,8 @@ class Authenticator extends TOTP {
    */
   get defaultOptions() {
     return {
+      base32Decode: decodeKey,
+      base32Encode: encodeKey,
       encoding: 'hex',
       epoch: null,
       step: 30,
@@ -67,14 +69,16 @@ class Authenticator extends TOTP {
    * @see {@link module:impl/authenticator/encodeKey}
    */
   encode(...args) {
-    return encodeKey(...args);
+    const opt = this.optionsAll;
+    return opt.base32Encode(...args);
   }
 
   /**
    * @see {@link module:impl/authenticator/decodeKey}
    */
   decode(...args) {
-    return decodeKey(...args);
+    const opt = this.optionsAll;
+    return opt.base32Decode(...args);
   }
 
   /**
@@ -96,8 +100,9 @@ class Authenticator extends TOTP {
     if (!len) {
       return '';
     }
-    const secret = secretKey(len, this.optionsAll);
-    return encodeKey(secret);
+    const opt = this.optionsAll;
+    const secret = secretKey(len, opt);
+    return opt.base32Encode(secret);
   }
 
   /**
